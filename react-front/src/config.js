@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-// const baseURL = 'http://143.198.155.85/api/'; // live server
-// const mediaURL = 'http://143.198.155.85/';
+const baseURL = 'https://scan-notes.fr/api/'; // live server
+const mediaURL = 'https://scan-notes.fr/';
 
 // const baseURL = 'https://10.10.13.230:5000/api/';
 // const mediaURL = 'https://10.10.13.230:5000/';
-const baseURL = 'https://127.0.0.1:8000/api/';
-const mediaURL = 'https://127.0.0.1:8000/';
+// const baseURL = 'https://127.0.0.1:8000/api/';
+// const mediaURL = 'https://127.0.0.1:8000/';
 
 const $http = axios.create({
   baseURL,

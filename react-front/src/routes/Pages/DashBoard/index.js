@@ -121,25 +121,13 @@ const DashBoard = () => {
     const enlargedImage = document.querySelector('#enlarged-image');
     enlargedImage.style.backgroundImage = `url(${photo_img_url})`;
 
-    const canvas = document.getElementById('myCanvas');
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
 
     const img = new Image();
     img.onload = function() {
-      // calculate the aspect ratio of the image
-      const aspectRatio = img.width / img.height;
-
-      // calculate the maximum dimensions of the image based on the canvas size
-      const maxWidth = img.width; // 500; //canvas.width;
-      const maxHeight = img.height; //500; //canvas.height;
-
-      // calculate the actual dimensions of the image, keeping its aspect ratio
-      let width = maxWidth;
-      let height = maxHeight / aspectRatio;
-      if (height > maxHeight) {
-        height = maxHeight;
-        width = height * aspectRatio;
-      }
+      let width = img.width;
+      let height = img.height;
 
       // set the canvas dimensions to match the scaled image size
       canvas.width = width;
