@@ -523,9 +523,12 @@ const DashBoard = props => {
         try {
           if (isImageLoading) {
             isImageLoading = false;
-            const new_scale = (new_scale * image.width) / canvas.width;
-            canvas.width = image.width;
-            canvas.height = image.height;
+            const imageContainer = document.querySelector('#image-container');
+            const fullWidth = imageContainer.clientWidth;
+            console.log('imageContainer', fullWidth);
+            const new_scale = (new_scale * fullWidth) / canvas.width;
+            canvas.width = fullWidth;
+            canvas.height = (fullWidth * image.height) / image.width;
 
             context.clearRect(0, 0, canvas.width, canvas.height);
             context.drawImage(image, 0, 0, canvas.width, canvas.height);
