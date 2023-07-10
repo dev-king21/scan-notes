@@ -15,7 +15,18 @@ import {
   DialogActions,
   makeStyles,
 } from '@material-ui/core';
-import { Delete, PlayArrow, Stop, ZoomIn, ZoomOut } from '@material-ui/icons';
+import {
+  Delete,
+  PlayArrow,
+  Stop,
+  ZoomIn,
+  ZoomOut,
+  CenterFocusStrong,
+  ZoomOutMap,
+  CloudUpload,
+  PhotoCamera,
+  Send,
+} from '@material-ui/icons';
 import { useTheme } from '@material-ui/core/styles';
 
 import GridContainer from '../../../@jumbo/components/GridContainer';
@@ -56,15 +67,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DashBoard = () => {
+const DashBoard = props => {
   const classes = useStyles();
-  const [photo_img, setPhotoImg] = useState(undefined);
+  const [photo_img, setPhotoImg] = useState(
+    props.location.state && props.location.state.photo_img ? props.location.state.photo_img : undefined,
+  );
   const [showMessage, setShowMessage] = useState(false);
   const [message, setMessage] = useState('');
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [photo_img_url, setPhotoImgUrl] = useState('https://via.placeholder.com/600x400');
-  const [selectedImageURL, setSelectedImageURL] = useState([]);
+  const [selectedImageURL, setSelectedImageURL] = useState(
+    props.location.state && props.location.state.selectedImageURL ? props.location.state.selectedImageURL : [],
+  );
 
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -84,6 +99,7 @@ const DashBoard = () => {
   const [gotoDetail, setGotoDetail] = useState(false);
   const History = useHistory();
   const [scale, setScale] = useState(1);
+  const [zoomFocus, setZoomFocus] = useState(false);
   let isImageLoading = false;
 
   useEffect(() => {
@@ -115,6 +131,7 @@ const DashBoard = () => {
       // Hide the enlarged image container when the mouse moves out
       enlargedImage.style.display = 'none';
     });
+    if (photo_img) handleFileInputChange(photo_img);
   }, []);
 
   useEffect(() => {
@@ -137,7 +154,6 @@ const DashBoard = () => {
       ctx.drawImage(img, 0, 0, width, height);
     };
     img.src = photo_img_url;
-    // setSelectedImageURL([]);
   }, [photo_img_url]);
 
   const handleSubmitClick = () => {
@@ -183,7 +199,7 @@ const DashBoard = () => {
   const handleGotoDetailClick = () => {
     History.push({
       pathname: 'detail-page',
-      state: { selectedImageURL },
+      state: { selectedImageURL, photo_img },
     });
   };
 
@@ -243,25 +259,23 @@ const DashBoard = () => {
     }
   };
 
-  const handleFileInputChange = event => {
-    let fileObj = { file: event.target.files[0] };
-
-    const file = fileObj.file;
-    if (file.type === 'application/pdf') {
+  const handleFileInputChange = fileObj => {
+    console.log('fileObj***', fileObj);
+    if (fileObj && fileObj.type === 'application/pdf') {
       // The file is a PDF
-      setPhotoImg(file);
-      loadPdfFile(file, 1);
-    } else if (file.type.startsWith('image/')) {
+      setPhotoImg(fileObj);
+      loadPdfFile(fileObj, 1);
+    } else if (fileObj && fileObj.type.startsWith('image/')) {
       // The file is an image
-      setPhotoImg(file);
+      setPhotoImg(fileObj);
       setNumPages(0);
       setCurrentPage(1);
-      loadImageFile(file);
+      loadImageFile(fileObj);
     } else {
       // The file is not a PDF or an image
       dispatch(fetchError('Invalid file format'));
     }
-    fileObj.file = null;
+    fileObj = null;
   };
 
   const handleMouseDown = e => {
@@ -278,6 +292,13 @@ const DashBoard = () => {
   };
 
   const handleMouseMove = e => {
+    const enlargedImage = document.querySelector('#enlarged-image');
+
+    if (!zoomFocus) {
+      enlargedImage.style.display = 'none';
+    } else {
+      enlargedImage.style.display = 'block';
+    }
     if (!isDragging) return;
 
     const canvas = canvasRef.current;
@@ -288,17 +309,23 @@ const DashBoard = () => {
     setEndX(x);
     setEndY(y);
     redrawCanvas();
-    const enlargedImage = document.querySelector('#enlarged-image');
     enlargedImage.style.display = 'none';
   };
 
   const handleMouseUp = () => {
+    const enlargedImage = document.querySelector('#enlarged-image');
+
+    if (!zoomFocus) {
+      enlargedImage.style.display = 'none';
+    } else {
+      enlargedImage.style.display = 'block';
+    }
+
     setIsDragging(false);
     redrawCanvas();
     extractSelectedArea();
     try {
       const canvas = canvasRef.current;
-      const enlargedImage = document.querySelector('#enlarged-image');
       enlargedImage.style.backgroundImage = `url(${canvas.toDataURL('image/jpeg')})`;
     } catch (error) {
       console.log(error);
@@ -422,13 +449,17 @@ const DashBoard = () => {
       const image = new Image();
 
       image.onload = () => {
-        if (isImageLoading) {
-          isImageLoading = false;
-          context.clearRect(0, 0, canvas.width, canvas.height);
-          context.drawImage(image, 0, 0, canvas.width, canvas.height);
-          const enlargedImage = document.querySelector('#enlarged-image');
-          enlargedImage.style.backgroundImage = `url(${canvas.toDataURL('image/jpeg')})`;
-          setScale(new_scale);
+        try {
+          if (isImageLoading) {
+            isImageLoading = false;
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            const enlargedImage = document.querySelector('#enlarged-image');
+            enlargedImage.style.backgroundImage = `url(${canvas.toDataURL('image/jpeg')})`;
+            setScale(new_scale);
+          }
+        } catch (error) {
+          console.log(error);
         }
       };
 
@@ -455,13 +486,17 @@ const DashBoard = () => {
       const image = new Image();
 
       image.onload = () => {
-        if (isImageLoading) {
-          isImageLoading = false;
-          context.clearRect(0, 0, canvas.width, canvas.height);
-          context.drawImage(image, 0, 0, canvas.width, canvas.height);
-          const enlargedImage = document.querySelector('#enlarged-image');
-          enlargedImage.style.backgroundImage = `url(${canvas.toDataURL('image/jpeg')})`;
-          setScale(new_scale);
+        try {
+          if (isImageLoading) {
+            isImageLoading = false;
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            const enlargedImage = document.querySelector('#enlarged-image');
+            enlargedImage.style.backgroundImage = `url(${canvas.toDataURL('image/jpeg')})`;
+            setScale(new_scale);
+          }
+        } catch (error) {
+          console.log(error);
         }
       };
 
@@ -476,6 +511,45 @@ const DashBoard = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleZoomOutMapClick = () => {
+    try {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+
+      const image = new Image();
+
+      image.onload = () => {
+        try {
+          if (isImageLoading) {
+            isImageLoading = false;
+            const new_scale = (new_scale * image.width) / canvas.width;
+            canvas.width = image.width;
+            canvas.height = image.height;
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            const enlargedImage = document.querySelector('#enlarged-image');
+            enlargedImage.style.backgroundImage = `url(${canvas.toDataURL('image/jpeg')})`;
+            setScale(new_scale);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      if (!isImageLoading) {
+        isImageLoading = true;
+        image.src = photo_img_url;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleZoomFocusClick = () => {
+    setZoomFocus(!zoomFocus);
   };
 
   const handleCaptureButtonClick = () => {
@@ -556,8 +630,9 @@ const DashBoard = () => {
                           variant="contained"
                           color="primary"
                           onClick={handleSubmitClick}
-                          disabled={loading || selectedImageURL.length == 0}>
-                          {loading ? <i className="zmdi zmdi-hc-lg zmdi-settings zmdi-hc-spin mr-1">Submit</i> : `Submit`}
+                          disabled={loading || selectedImageURL.length == 0}
+                          startIcon={<Send />}>
+                          Submit
                         </Button>
                       </Grid>
                       <Grid item xs={6} style={{ textAlign: 'center' }}>
@@ -577,12 +652,18 @@ const DashBoard = () => {
                 onClick={e => {
                   document.getElementById('photo_img').click();
                 }}
-                disabled={loading}>
+                disabled={loading}
+                startIcon={<CloudUpload />}>
                 Upload Image/PDF
               </Button>
             </Grid>
             <Grid item xs={4} style={{ textAlign: 'center' }}>
-              <Button variant="contained" color="primary" onClick={() => handleScanButtonClick()} disabled={loading}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleScanButtonClick()}
+                disabled={loading}
+                startIcon={<PhotoCamera />}>
                 Scan
               </Button>
             </Grid>
@@ -592,6 +673,15 @@ const DashBoard = () => {
               </IconButton>
               <IconButton style={{ marginLeft: 4 }} color="secondary" onClick={() => handleZoomOutClick()}>
                 <ZoomOut />
+              </IconButton>
+              <IconButton style={{ marginLeft: 4 }} color="secondary" onClick={() => handleZoomOutMapClick()}>
+                <ZoomOutMap />
+              </IconButton>
+              <IconButton
+                style={{ marginLeft: 4 }}
+                color={zoomFocus ? 'secondary' : 'primary'}
+                onClick={() => handleZoomFocusClick()}>
+                <CenterFocusStrong />
               </IconButton>
             </Grid>
             <Grid item xs={12} sm={12} md={12}>
@@ -609,7 +699,7 @@ const DashBoard = () => {
                   id="photo_img"
                   name="photo_img"
                   style={{ display: 'none' }}
-                  onChange={event => handleFileInputChange(event)}
+                  onChange={event => handleFileInputChange(event.target.files[0])}
                 />
                 <div
                   style={{ width: '100%', height: '800px', overflow: 'auto' }}

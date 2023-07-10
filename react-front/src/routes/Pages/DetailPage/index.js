@@ -132,7 +132,10 @@ const DetailPage = props => {
   };
 
   const handleGoBackClick = () => {
-    History.push('/dashboard');
+    History.push({
+      pathname: 'dashboard',
+      state: { selectedImageURL: results, photo_img: props.location.state.photo_img },
+    });
   };
 
   const handlePrintClick = () => {
@@ -150,6 +153,8 @@ const DetailPage = props => {
         cells[1].style.display = 'none';
       }
       const h_cells = rows[i].getElementsByTagName('th');
+      console.log('rows', i, rows[i], cells, h_cells);
+
       if (h_cells.length > 1) {
         h_cells[1].style.display = 'none';
       }
@@ -193,7 +198,7 @@ const DetailPage = props => {
         for (let i = 0; i < results.length; i++) {
           const pencil = document.getElementById(`pencil-${i}`);
           if (pencil) {
-            pencil.style.display = 'none';
+            pencil.style.display = '';
           }
         }
 
