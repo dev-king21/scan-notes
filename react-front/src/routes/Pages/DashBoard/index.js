@@ -525,7 +525,6 @@ const DashBoard = props => {
             isImageLoading = false;
             const imageContainer = document.querySelector('#image-container');
             const fullWidth = imageContainer.clientWidth;
-            console.log('imageContainer', fullWidth);
             const new_scale = (new_scale * fullWidth) / canvas.width;
             canvas.width = fullWidth;
             canvas.height = (fullWidth * image.height) / image.width;
@@ -584,13 +583,9 @@ const DashBoard = props => {
                         <TableBody>
                           {selectedImageURL.map(img => (
                             <TableRow key={img.id}>
-                              <TableCell style={{ padding: '0px', width: '200px' }}>
-                                <div className="jr-card-thumb" style={{ width: '200px' }}>
-                                  <CmtImage
-                                    id={`second_image${img.id}`}
-                                    src={img.image}
-                                    style={{ height: '100%', width: '100%', objectFit: 'cover' }}
-                                  />
+                              <TableCell>
+                                <div className="jr-card-thumb">
+                                  <CmtImage id={`second_image${img.id}`} src={img.image} style={{ objectFit: 'cover' }} />
                                   {currentMidi && currentMidi == img.id ? (
                                     <audio
                                       src={`${mediaURL}${img.source}`}
