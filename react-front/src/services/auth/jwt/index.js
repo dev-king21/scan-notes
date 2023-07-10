@@ -4,14 +4,21 @@ import React from 'react';
 import axios from './config';
 
 const JWTAuth = {
-  onRegister: ({ name, email, password }) => {
+  onRegister: ({ email, password, firstName, lastName, phoneNumber, address, birthday, school, teacher, software }) => {
     return dispatch => {
       dispatch(fetchStart());
       axios
         .post('users/register', {
           email: email,
           password: password,
-          username: name,
+          first_name: firstName,
+          last_name: lastName,
+          phone_number: phoneNumber,
+          address: address,
+          birthday: (birthday ? birthday : new Date()).toISOString().substring(0, 10),
+          school: school,
+          teacher: teacher,
+          software: software,
         })
         .then(({ data }) => {
           if (data.result) {

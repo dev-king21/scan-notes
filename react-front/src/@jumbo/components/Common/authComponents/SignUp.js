@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+import { Box, TextField, Switch, Button, FormControlLabel } from '@material-ui/core';
 import IntlMessages from '../../../utils/IntlMessages';
-import Button from '@material-ui/core/Button';
 import { AuhMethods } from '../../../../services/auth';
 import ContentLoader from '../../ContentLoader';
 import { alpha, makeStyles } from '@material-ui/core/styles';
@@ -12,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { CurrentAuthMethod } from '../../../constants/AppConstants';
 import AuthWrapper from './AuthWrapper';
 import { NavLink } from 'react-router-dom';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 
 const useStyles = makeStyles(theme => ({
   authThumb: {
@@ -63,14 +62,34 @@ const useStyles = makeStyles(theme => ({
 
 //variant = 'default', 'standard', 'bgColor'
 const SignUp = ({ method = CurrentAuthMethod, variant = 'default', wrapperVariant = 'default' }) => {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
+  const [birthday, setBirthday] = useState(new Date());
+  const [school, setSchool] = useState('');
+  const [teacher, setTeacher] = useState(false);
+  const [software, setSoftware] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const classes = useStyles({ variant });
 
   const onSubmit = () => {
-    dispatch(AuhMethods[method].onRegister({ name, email, password }));
+    dispatch(
+      AuhMethods[method].onRegister({
+        email,
+        password,
+        firstName,
+        lastName,
+        phoneNumber,
+        address,
+        birthday,
+        school,
+        teacher,
+        software,
+      }),
+    );
   };
 
   return (
@@ -85,24 +104,14 @@ const SignUp = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
           <CmtImage src={'/images/logo.png'} />
         </Box>
         <Typography component="div" variant="h1" className={classes.titleRoot}>
-          Create an account
+          <IntlMessages id="appModule.createAccount" />
         </Typography>
         <form>
           <Box mb={2}>
             <TextField
-              label={<IntlMessages id="appModule.name" />}
-              fullWidth
-              onChange={event => setName(event.target.value)}
-              defaultValue={name}
-              margin="normal"
-              variant="outlined"
-              className={classes.textFieldRoot}
-            />
-          </Box>
-          <Box mb={2}>
-            <TextField
               label={<IntlMessages id="appModule.email" />}
               fullWidth
+              required
               onChange={event => setEmail(event.target.value)}
               defaultValue={email}
               margin="normal"
@@ -114,6 +123,7 @@ const SignUp = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
             <TextField
               type="password"
               label={<IntlMessages id="appModule.password" />}
+              required
               fullWidth
               onChange={event => setPassword(event.target.value)}
               defaultValue={password}
@@ -122,7 +132,111 @@ const SignUp = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
               className={classes.textFieldRoot}
             />
           </Box>
-
+          <Box mb={2}>
+            <TextField
+              label={<IntlMessages id="appModule.firstName" />}
+              required
+              fullWidth
+              onChange={event => setFirstName(event.target.value)}
+              defaultValue={firstName}
+              margin="normal"
+              variant="outlined"
+              className={classes.textFieldRoot}
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              label={<IntlMessages id="appModule.lastName" />}
+              required
+              fullWidth
+              onChange={event => setLastName(event.target.value)}
+              defaultValue={lastName}
+              margin="normal"
+              variant="outlined"
+              className={classes.textFieldRoot}
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              label={<IntlMessages id="appModule.phoneNumber" />}
+              required
+              fullWidth
+              onChange={event => setPhoneNumber(event.target.value)}
+              defaultValue={phoneNumber}
+              margin="normal"
+              variant="outlined"
+              className={classes.textFieldRoot}
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              label={<IntlMessages id="appModule.address" />}
+              required
+              fullWidth
+              onChange={event => setAddress(event.target.value)}
+              defaultValue={address}
+              margin="normal"
+              variant="outlined"
+              className={classes.textFieldRoot}
+            />
+          </Box>
+          <Box mb={2}>
+            <KeyboardDatePicker
+              disableToolbar
+              required
+              variant="inline"
+              format="MM/DD/yyyy"
+              margin="normal"
+              id="birthday"
+              label={<IntlMessages id="appModule.birthday" />}
+              value={birthday}
+              onChange={setBirthday}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              label={<IntlMessages id="appModule.school" />}
+              fullWidth
+              onChange={event => setSchool(event.target.value)}
+              defaultValue={school}
+              margin="normal"
+              variant="outlined"
+              className={classes.textFieldRoot}
+            />
+          </Box>
+          <Box mb={2}>
+            {/* <TextField
+              label={<IntlMessages id="appModule.teacher" />}
+              required
+              fullWidth
+              onChange={event => setTeacher(event.target.value)}
+              defaultValue={teacher}
+              margin="normal"
+              variant="outlined"
+              className={classes.textFieldRoot}
+            /> */}
+            <FormControlLabel
+              value="start"
+              control={<Switch checked={teacher} onChange={event => setTeacher(event.target.checked)} name="teacher" />}
+              label={<IntlMessages id="appModule.teacher" />}
+              labelPlacement="start"
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              label={<IntlMessages id="appModule.software" />}
+              required
+              fullWidth
+              onChange={event => setSoftware(event.target.value)}
+              defaultValue={software}
+              margin="normal"
+              variant="outlined"
+              className={classes.textFieldRoot}
+            />
+          </Box>
           <Box
             display="flex"
             flexDirection={{ xs: 'column', sm: 'row' }}

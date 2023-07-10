@@ -66,12 +66,12 @@ const HeaderMain = () => {
       <SidebarToggleHandler edge="start" color="inherit" aria-label="menu" />
       <Logo mr={{ xs: 2, sm: 4, lg: 6, xl: 8 }} color="white" />
       <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
-        <SearchPopover iconClassName={clsx(classes.searchIcon, 'Cmt-searchIcon')} />
+        {/* <SearchPopover iconClassName={clsx(classes.searchIcon, 'Cmt-searchIcon')} />
         <Hidden lgUp>
           <AppsMenu />
           <HeaderMessages />
           <HeaderNotifications />
-        </Hidden>
+        </Hidden> */}
         {/* <div className={clsx(classes.langRoot, 'Cmt-i18n-switch')}>
           <LanguageSwitcher />
         </div> */}

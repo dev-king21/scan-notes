@@ -96,7 +96,7 @@ const DashBoard = props => {
   const [numPages, setNumPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentMidi, setCurrentMidi] = useState(0);
-  const [gotoDetail, setGotoDetail] = useState(false);
+  const [gotoDetail, setGotoDetail] = useState(props.location.state && props.location.state.photo_img ? true : false);
   const History = useHistory();
   const [scale, setScale] = useState(1);
   const [zoomFocus, setZoomFocus] = useState(false);
@@ -260,7 +260,6 @@ const DashBoard = props => {
   };
 
   const handleFileInputChange = fileObj => {
-    console.log('fileObj***', fileObj);
     if (fileObj && fileObj.type === 'application/pdf') {
       // The file is a PDF
       setPhotoImg(fileObj);

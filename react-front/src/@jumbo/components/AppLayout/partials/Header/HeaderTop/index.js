@@ -68,12 +68,12 @@ const HeaderTop = () => {
         <GlobalSearchForm />
       </Hidden>
       <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
-        <Hidden mdUp>
+        {/* <Hidden mdUp>
           <SearchPopover iconClassName={clsx(classes.searchIcon, 'Cmt-searchIcon')} />
         </Hidden>
         <AppsMenu />
         <HeaderMessages />
-        <HeaderNotifications />
+        <HeaderNotifications /> */}
         {/* <div className={clsx(classes.langRoot, 'Cmt-i18n-switch')}>
           <LanguageSwitcher />
         </div> */}

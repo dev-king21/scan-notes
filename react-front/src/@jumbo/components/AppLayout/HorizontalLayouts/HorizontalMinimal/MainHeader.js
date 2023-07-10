@@ -80,10 +80,10 @@ const MainHeader = () => {
       </Hidden>
 
       <Box display="flex" alignItems="center" ml="auto">
-        <SearchPopover iconClassName={clsx(classes.searchIcon, 'Cmt-searchIcon')} />
+        {/* <SearchPopover iconClassName={clsx(classes.searchIcon, 'Cmt-searchIcon')} />
         <AppsMenu />
         <HeaderMessages />
-        <HeaderNotifications />
+        <HeaderNotifications /> */}
         {/* <Box className={clsx(classes.langRoot, 'Cmt-i18n-switch')}>
           <LanguageSwitcher />
         </Box> */}

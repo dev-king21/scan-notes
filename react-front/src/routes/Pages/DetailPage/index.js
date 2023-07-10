@@ -153,7 +153,6 @@ const DetailPage = props => {
         cells[1].style.display = 'none';
       }
       const h_cells = rows[i].getElementsByTagName('th');
-      console.log('rows', i, rows[i], cells, h_cells);
 
       if (h_cells.length > 1) {
         h_cells[1].style.display = 'none';

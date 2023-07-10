@@ -76,7 +76,7 @@ const SidebarHeader = () => {
           }}>
           <div className="mr-2">
             <Typography className={classes.userTitle} component="h3" variant="h6">
-              {authUser ? authUser.username : 'Jhon son'}
+              {authUser ? authUser.first_name : 'Jhon son'}
             </Typography>
             <Typography className={classes.userSubTitle}>{authUser ? authUser.email : 'jhonson@gmail.com'}</Typography>
           </div>

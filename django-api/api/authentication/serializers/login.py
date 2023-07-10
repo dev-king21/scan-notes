@@ -19,7 +19,7 @@ def _generate_jwt_token(user):
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=255)
-    username = serializers.CharField(max_length=255, read_only=True)
+    first_name = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
 
     def validate(self, data):
@@ -61,5 +61,5 @@ class LoginSerializer(serializers.Serializer):
         return {
             "success": True,
             "token": session.token,
-            "user": {"_id": user.pk, "username": user.username, "email": user.email},
+            "user": {"_id": user.pk, "username": user.first_name, "email": user.email},
         }
